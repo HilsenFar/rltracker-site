@@ -14,15 +14,25 @@
      this page lays a "stadium night" skin on top of it. -->
 <link rel="stylesheet" href="ds.css" />
 <style>
-  /* Archivo self-hostes (27/8): samme fil som appen skiber, saa landing,
-     portal, rapporter og tracker deler EEN skrift. Google Fonts er ude —
-     een tredjeparts-forespoergsel faerre paa en side, hvis hele budskab er
-     at data bliver hos brugeren. Aksen er den maalte: wdth 62-125 (Googles
-     udsnit stoppede ved 75 og smed den smalle display-ende vaek). */
+  /* Archivo is self-hosted (27/8): the same file the app ships, so landing,
+     portal, reports and tracker share ONE typeface. The axis is the measured
+     one: wdth 62-125 (Google's subset stopped at 75 and threw away the narrow
+     display end).
+     Orbitron 800 (the GITATO mark, 6 glyphs) is self-hosted too (3/9): Google
+     Fonts' own latin woff2, OFL. This declaration comes after ds.css, so it
+     wins over the Google one and the gstatic font request is gone. ds.css
+     still carries its @import of the Google stylesheet; removing that is the
+     design system's job, not this page's. */
   @font-face{
     font-family:'Archivo';
     src:url('archivo-var.woff2') format('woff2');
     font-weight:100 900; font-stretch:62% 125%; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Orbitron';
+    src:url('orbitron-800.woff2') format('woff2');
+    font-weight:800; font-style:normal; font-display:swap;
+    unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
   }
   </style>
 <style>
@@ -47,9 +57,9 @@
     --st-on-line:  #072019;
     --st-edge:   rgba(184, 199, 224, .13);
     --st-r:      12px;
-    /* EEN familie baerer alle tre roller. Foer pegede --f-ui paa Chakra Petch
-       og --f-body paa Barlow — og ingen af dem blev nogensinde indlaest, saa
-       to tredjedele af siden stod i browserens standard-sans. */
+    /* ONE family carries all three roles. Before, --f-ui pointed at Chakra Petch
+       and --f-body at Barlow, and neither was ever loaded, so two thirds of
+       the page sat in the browser's default sans. */
     --f-disp: 'Archivo', 'Segoe UI', system-ui, sans-serif;
     --f-ui:   'Archivo', 'Segoe UI', system-ui, sans-serif;
     --f-body: 'Archivo', 'Segoe UI', system-ui, sans-serif;
@@ -63,10 +73,11 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html { background: var(--st-night); }
+  html { background: var(--st-night); overflow-x: clip; }
   body {
     min-height: 100%;
-    /* Samme stadion som i appen (brugerens eget billede, 26/8) — eet brand. */
+    overflow-x: clip;
+    /* Same stadium as in the app (the user's own picture, 26/8): one brand. */
     background:
       radial-gradient(120% 58% at 50% -8%, rgba(120,160,215,.16), transparent 62%),
       linear-gradient(180deg, rgba(10, 16, 30, .58), rgba(6, 10, 19, .95) 62%),
@@ -191,6 +202,12 @@
     box-shadow: var(--st-chamfer), 0 18px 44px -18px rgba(0, 0, 0, .75);
   }
   @supports (corner-shape: bevel){ .debrief { corner-shape: round bevel round round; } }
+  /* Tag and kicker share a line when there is room; in a narrow card the
+     kicker drops to its own line whole instead of breaking mid-phrase. */
+  .debrief .head {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+    margin-bottom: 16px;
+  }
   .debrief .tag {
     display: inline-block;
     font-family: var(--f-ui); font-size: 10.5px; font-weight: 700;
@@ -199,7 +216,6 @@
     border: 1px solid rgba(39, 217, 192, .45);
     border-radius: 4px;
     padding: 3px 8px;
-    margin-bottom: 16px;
   }
   .debrief .kicker {
     font-family: var(--f-ui); font-size: 11.5px; font-weight: 600;
@@ -240,7 +256,7 @@
     font-size: 15px; color: var(--st-ink-2);
   }
   .advice .src {
-    display: inline-block; margin-top: 8px;
+    display: block; margin-top: 8px;
     font-family: var(--f-ui); font-size: 10.5px; font-weight: 600;
     letter-spacing: .13em; text-transform: uppercase; color: var(--st-ink-3);
   }
@@ -251,8 +267,8 @@
     display: grid; gap: 16px;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
-  /* Fraeset plade, samme hus-hjoerne som i appen: eet skaaret hjoerne oeverst
-     til hoejre, oplyst 1 px chamfer paa de kanter der vender mod lyset. */
+  /* Milled plate, same house corner as in the app: one cut corner at the top
+     right, a lit 1 px chamfer on the edges that face the light. */
   .card {
     background:
       linear-gradient(187deg, rgba(255,255,255,.05) 0%, rgba(255,255,255,.01) 34%, rgba(0,0,0,.06) 58%, rgba(190,220,255,.02) 100%),
@@ -387,10 +403,11 @@
       against your own baseline, and coaches you one focus at a time.</p>
 
       <div class="dl-row">
-        <!-- Zip'en bor PAA gitato.net (26/8): VirusTotal-tests af linket viser
-             saa DETTE domaene i toppen. Ved ny release: kopier ny zip hertil
-             (runbook trin 4). GitHub-releases er stadig update-kanalen. -->
-        <a class="dl" href="https://gitato.net/rl-tracker/RL-Tracker-Portable.zip">
+        <!-- The zip is a GitHub Releases asset (3/9): latest/download always
+             resolves to the newest release, so a new release needs no copy
+             here. Until 26/8-3/9 it lived on gitato.net so VirusTotal showed
+             this domain; that cost 35 MB of Pages history per release. -->
+        <a class="dl" href="https://github.com/HilsenFar/rl-tracker-releases/releases/latest/download/RL-Tracker-Portable.zip">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M12 3v12m0 0l-5-5m5 5l5-5M4 21h16" />
           </svg>
@@ -409,8 +426,10 @@
     </div>
 
     <aside class="debrief" aria-label="Example of a post-match debrief">
-      <span class="tag">Example debrief</span>
-      <span class="kicker">One focus at a time</span>
+      <div class="head">
+        <span class="tag">Example debrief</span>
+        <span class="kicker">One focus at a time</span>
+      </div>
       <h3>Kickoff first touch</h3>
       <div class="meter" role="img" aria-label="Meter: today 58 percent, your normal 41 percent">
         <span class="base"></span>
@@ -484,9 +503,9 @@
 </div>
 
 <script>
-/* Anonym download-tæller (26/8): Pages har ingen logs, så knappen pinger
-   collectoren ved klik — kun et tal, intet id, ingen cookies. Fire-and-forget:
-   fejler beacon'et, sker der intet med selve downloadet. */
+/* Anonymous download counter (26/8): Pages has no logs, so the button pings
+   the collector on click. Just a number, no id, no cookies. Fire-and-forget:
+   if the beacon fails, nothing happens to the download itself. */
 (function(){
   var a = document.querySelector('a.dl');
   if (!a) return;
