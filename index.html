@@ -232,6 +232,8 @@
     font-family: var(--f-ui); font-size: 11.5px; font-weight: 600;
     letter-spacing: .13em; text-transform: uppercase; color: var(--st-ink-3);
   }
+  .relver { display: block; margin-top: 4px; color: var(--st-line); }
+  .relver:empty { display: none; }
   .smartscreen { margin-top: 20px; max-width: 58ch; font-size: 14.5px; color: var(--st-ink-3); }
   .smartscreen b { color: var(--st-ink-2); font-weight: 600; }
 
@@ -473,7 +475,7 @@
           </svg>
           Download for Windows
         </a>
-        <span class="dl-meta">Free · latest version · installer, no admin needed</span>
+        <span class="dl-meta">Free · installer, no admin needed<span class="relver" id="relver"></span></span>
       </div>
 
       <div class="handoff" id="handoff" hidden>
@@ -616,6 +618,28 @@
   a.addEventListener('click', function(){
     try{ navigator.sendBeacon('https://collect.gitato.net/v1/dl', 'rltracker-sub'); }catch(e){}
   });
+})();
+</script>
+<script>
+/* Latest release, read from GitHub so this line can never go stale. One call,
+   cached for an hour in this browser; on any failure the line stays empty. */
+(function(){
+  var el = document.getElementById('relver');
+  if (!el || !window.fetch) return;
+  var KEY = 'rl.relver.rl-tracker-releases', M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function show(tag, at){
+    if (!/^v?[\w.-]{1,30}$/.test(tag) || !/^\d{4}-\d\d-\d\dT/.test(at)) return;
+    var d = new Date(at);
+    el.textContent = 'Latest: ' + tag + ' \u00b7 ' + d.getUTCDate() + ' ' + M[d.getUTCMonth()] + ' ' + d.getUTCFullYear();
+  }
+  try { var c = JSON.parse(localStorage.getItem(KEY) || 'null'); if (c && Date.now() - c.t < 3600000) return show(c.tag, c.at); } catch (e) {}
+  fetch('https://api.github.com/repos/HilsenFar/rl-tracker-releases/releases/latest', { headers: { Accept: 'application/vnd.github+json' } })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      if (!j || typeof j.tag_name !== 'string') return;
+      show(j.tag_name, j.published_at);
+      try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), tag: j.tag_name, at: j.published_at })); } catch (e) {}
+    }).catch(function(){});
 })();
 </script>
 </body>
