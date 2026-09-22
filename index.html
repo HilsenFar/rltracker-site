@@ -5,13 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>RL Live Tracker</title>
 <meta name="description" content="A free coaching tracker that reads Rocket League's official Stats API while you play. Your data stays on your PC." />
-<meta property="og:title" content="RL Live Tracker" />
+<link rel="canonical" href="https://rltracker.gitato.net/" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://rltracker.gitato.net/" />
+<meta property="og:site_name" content="GITATO" />
+<meta property="og:title" content="RL Live Tracker — your car has a tell" />
 <meta property="og:description" content="A free coaching tracker that reads Rocket League's official Stats API while you play. Your data stays on your PC." />
-<meta property="og:image" content="https://gitato.net/assets/icons/icon-512.png" />
+<meta property="og:image" content="https://rltracker.gitato.net/og.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="RL Live Tracker: an example post-match debrief over a floodlit stadium" />
+<meta name="twitter:card" content="summary_large_image" />
 <meta name="theme-color" content="#101A2E" />
 <link rel="icon" type="image/png" href="icon-192.png" />
-<!-- GITATO Design System v2 (fonts + focus + base tokens) loads first;
-     this page lays a "stadium night" skin on top of it. -->
+<!-- The two faces above the fold, fetched before the CSS asks for them.
+     Without this, Archivo swapped in ~1.4 s after first paint and the hero
+     reflowed (measured on the sibling overlay page: CLS 0.275). -->
+<link rel="preload" href="archivo-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="orbitron-800.woff2" as="font" type="font/woff2" crossorigin />
+<!-- GITATO Design System v2.1 (focus + base tokens + icons) loads first;
+     this page lays a "stadium night" skin on top of it. v2.1 no longer
+     imports Google Fonts, so the page makes no third-party font request. -->
 <link rel="stylesheet" href="ds.css" />
 <style>
   /* Archivo is self-hosted (27/8): the same file the app ships, so landing,
@@ -19,10 +33,7 @@
      one: wdth 62-125 (Google's subset stopped at 75 and threw away the narrow
      display end).
      Orbitron 800 (the GITATO mark, 6 glyphs) is self-hosted too (3/9): Google
-     Fonts' own latin woff2, OFL. This declaration comes after ds.css, so it
-     wins over the Google one and the gstatic font request is gone. ds.css
-     still carries its @import of the Google stylesheet; removing that is the
-     design system's job, not this page's. */
+     Fonts' own latin woff2, OFL. */
   @font-face{
     font-family:'Archivo';
     src:url('archivo-var.woff2') format('woff2');
@@ -112,6 +123,40 @@
     font-family: var(--f-ui); font-size: 11.5px;
     letter-spacing: .16em; text-transform: uppercase; color: var(--st-ink-3);
   }
+  /* The three RL tools share one bar, so a visitor who lands on one finds
+     the other two. Same markup on all three sites; aria-current marks home. */
+  .family { margin-left: auto; display: flex; gap: 4px; align-self: center; }
+  .family a {
+    padding: 6px 11px;
+    font-family: var(--f-ui); font-size: 11.5px; font-weight: 600; font-stretch: 88%;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: var(--st-ink-3); text-decoration: none;
+    border: 1px solid transparent; border-radius: 6px;
+    transition: color .15s ease, border-color .15s ease, background .15s ease;
+  }
+  .family a:hover { color: var(--st-ink); border-color: var(--st-edge); }
+  .family a[aria-current="page"] { color: var(--st-ink); background: rgba(23, 36, 64, .7); border-color: var(--st-edge); }
+
+  /* Phone visitors (most of them, from Reddit) cannot install a Windows app
+     where they stand. Offer to send the link to where they can. */
+  .handoff {
+    margin-top: 18px; max-width: 58ch;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px;
+    padding: 14px 16px;
+    background: rgba(23, 36, 64, .72);
+    border: 1px solid var(--st-edge); border-radius: 10px;
+    font-size: 14.5px; color: var(--st-ink-2);
+  }
+  .handoff[hidden] { display: none; }
+  .handoff p { flex: 1 1 220px; }
+  .handoff button {
+    font: inherit; font-family: var(--f-ui); font-size: 13px; font-weight: 700;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: var(--st-on-line); background: var(--st-line);
+    border: 0; border-radius: 7px; padding: 10px 14px; cursor: pointer;
+  }
+  .handoff output { flex-basis: 100%; font-size: 13px; color: var(--st-line); }
+  .handoff output:empty { display: none; }
 
   /* ── Hero: headline left, example debrief right, pitch behind ── */
   .hero {
@@ -361,6 +406,10 @@
     @keyframes pulse { from { opacity: .45; } to { opacity: 1; } }
   }
 
+  @media (max-width: 560px) {
+    .top .crumb { display: none; }
+    .family a { padding: 6px 8px; letter-spacing: .1em; }
+  }
   @media (max-width: 900px) {
     .hero { grid-template-columns: 1fr; gap: 34px; }
     .pitch { right: -120px; top: 8%; translate: 0 0; opacity: .10; }
@@ -371,10 +420,15 @@
 <body data-gt="rltracker">
 <div class="wrap">
 
-  <div class="top">
+  <header class="top">
     <a class="mark" href="https://gitato.net/">GITATO</a>
     <span class="crumb">/ RL Live Tracker</span>
-  </div>
+    <nav class="family" aria-label="Rocket League tools">
+      <a href="https://rltracker.gitato.net/" aria-current="page">Tracker</a>
+      <a href="https://rankoverlay.gitato.net/">Overlay</a>
+      <a href="https://roll.gitato.net/">Roll</a>
+    </nav>
+  </header>
 
   <section class="hero">
     <svg class="pitch" viewBox="0 0 560 400" aria-hidden="true">
@@ -415,6 +469,12 @@
           Download for Windows
         </a>
         <span class="dl-meta">Free · latest version · installer, no admin needed</span>
+      </div>
+
+      <div class="handoff" id="handoff" hidden>
+        <p>On your phone? RL Live Tracker runs on a Windows PC. Send yourself the link and grab it there.</p>
+        <button type="button" id="handoffBtn">Send link</button>
+        <output id="handoffOut" aria-live="polite"></output>
       </div>
 
       <p class="smartscreen">Windows SmartScreen will warn you, because this is
@@ -464,7 +524,7 @@
 
     <section class="card">
       <h2><svg class="gi" aria-hidden="true"><use href="icons.svg#gi-check-circle"></use></svg>Works with EAC on</h2>
-      <p>One setting in TAStatsAPI.ini, and Rocket League broadcasts match JSON
+      <p>One setting in DefaultStatsAPI.ini, and Rocket League broadcasts match JSON
       on a local port on your PC. Nothing touches the game's process or memory.</p>
       <p><a href="https://rocketleague.com/developer/stats-api" rel="noopener">Psyonix
       documents this channel</a> for exactly this purpose.</p>
@@ -499,11 +559,48 @@
     <span>RL Live Tracker is in an open test phase. Found a bug, or advice that
     feels off? Use the FEEDBACK button in the app.</span>
     <span>Requires Windows 10/11 (64-bit) and Rocket League on PC.</span>
-    <span>A <a href="https://gitato.net/">GITATO</a> project.</span>
+    <span>A <a href="https://gitato.net/">GITATO</a> project. Also free:
+    <a href="https://rankoverlay.gitato.net/">RL Rank Overlay</a> and
+    <a href="https://roll.gitato.net/">RL Roll</a>.</span>
+    <span>Not affiliated with or endorsed by Psyonix or Epic Games.</span>
   </footer>
 
 </div>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "RL Live Tracker",
+  "url": "https://rltracker.gitato.net/",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Windows 10, Windows 11",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "A free coaching tracker that reads Rocket League's official Stats API while you play and coaches you one focus at a time. Your data stays on your PC.",
+  "author": { "@type": "Person", "name": "HilsenFar", "url": "https://github.com/HilsenFar" }
+}
+</script>
+<script>
+/* Phone handoff: shown only on a touch device that is not Windows. The share
+   sheet sends the link to wherever the visitor keeps it (mail, Discord, notes);
+   without one, the link goes to the clipboard. */
+(function(){
+  var box = document.getElementById('handoff');
+  var coarse = window.matchMedia && matchMedia('(pointer: coarse)').matches;
+  if (!box || !coarse || /Windows NT/.test(navigator.userAgent)) return;
+  box.hidden = false;
+  var out = document.getElementById('handoffOut');
+  var url = 'https://rltracker.gitato.net/';
+  document.getElementById('handoffBtn').addEventListener('click', function(){
+    if (navigator.share) {
+      navigator.share({ title: 'RL Live Tracker', text: 'Free Rocket League coach for PC', url: url }).catch(function(){});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(function(){ out.textContent = 'Link copied: ' + url; },
+        function(){ out.textContent = url; });
+    } else { out.textContent = url; }
+  });
+})();
+</script>
 <script>
 /* Anonymous download counter (26/8): Pages has no logs, so the button pings
    the collector on click. Just a number, no id, no cookies. Fire-and-forget:
