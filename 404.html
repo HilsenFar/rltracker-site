@@ -5,15 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>404 — GITATO</title>
 <meta name="robots" content="noindex" />
-<meta name="theme-color" content="#0A0C10" />
+<meta name="theme-color" content="#101A2E" />
 <link rel="icon" type="image/png" href="/icon-192.png" />
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<!-- Same URL as the @import in ds.css, so the font CSS is fetched in parallel
-     with ds.css instead of after it (the @import then hits the cache). -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&amp;family=Chakra+Petch:wght@500;600;700&amp;family=Barlow:wght@400;500;600;700&amp;display=swap" />
-<!-- GITATO Design System v2 — must load before this page's own styles.
+<!-- GITATO Design System v2.1 — must load before this page's own styles.
      Absolute path: a 404 is served for /any/depth/at/all, so a relative
      href would resolve against the missing URL and 404 as well. -->
 <link rel="stylesheet" href="/ds.css" />
@@ -21,19 +16,29 @@
   /* Until now rltracker.gitato.net served GitHub Pages' own 404 — a light-grey
      Helvetica page with no relation to anything else on the domain. Pages picks
      this file up automatically from the repo root. Same page as gitato.net/404.html,
-     paths adjusted to this repo's root. */
+     paths adjusted to this repo's root.
+     22/9: in the RL family's own type and night palette. It pulled Chakra Petch
+     and Barlow from Google, the one third-party request left on this domain;
+     now it uses the Archivo file the landing already ships. */
+  @font-face {
+    font-family: 'Archivo';
+    src: url('/archivo-var.woff2') format('woff2');
+    font-weight: 100 900; font-stretch: 62% 125%; font-style: normal; font-display: swap;
+  }
+  body { --gt-font-ui: 'Archivo', 'Segoe UI', system-ui, sans-serif;
+         --gt-font-body: 'Archivo', 'Segoe UI', system-ui, sans-serif; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html { background: var(--gt-sub-0); }
+  html { background: #101A2E; }
   body {
     min-height: 100vh;
     display: grid;
     place-items: center;
     padding: var(--gt-s-6) var(--gt-s-5);
     background:
-      radial-gradient(1100px 640px at 68% -12%, rgba(124, 108, 255, .14), transparent 62%),
-      radial-gradient(820px 560px at 8% 112%, rgba(255, 43, 78, .07), transparent 60%),
-      var(--gt-sub-0);
+      radial-gradient(120% 58% at 50% -8%, rgba(120, 160, 215, .16), transparent 62%),
+      radial-gradient(820px 560px at 8% 112%, rgba(255, 158, 44, .06), transparent 60%),
+      #101A2E;
     color: var(--gt-ink-1);
     font-family: var(--gt-font-body);
   }
@@ -108,7 +113,7 @@
   .hz { margin-top: var(--gt-s-6); }
 </style>
 </head>
-<body data-gt="hub">
+<body data-gt="rltracker">
 <div class="grain"></div>
 
 <main>
@@ -131,16 +136,10 @@
     </div>
 
     <nav class="links" aria-label="Projects">
-      <a href="https://game.gitato.net/rts/">Gitato Command</a>
-      <a href="https://game.gitato.net">Gitato</a>
-      <a href="https://spil.gitato.net">Sprunkiverse</a>
-      <a href="https://beatsurfer.gitato.net">BeatSurfer</a>
-      <a href="https://frequencypilot.gitato.net">Frequency-Pilot</a>
-      <a href="https://addson.gitato.net">AddSon</a>
-      <a href="https://mediestudio.gitato.net">MedieStudio</a>
       <a href="https://rltracker.gitato.net">RL Live Tracker</a>
       <a href="https://rankoverlay.gitato.net">RL Rank Overlay</a>
       <a href="https://roll.gitato.net">RL Roll</a>
+      <a href="https://gitato.net/">All GITATO projects</a>
     </nav>
   </div>
 
