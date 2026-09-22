@@ -308,6 +308,41 @@
     letter-spacing: .13em; text-transform: uppercase; color: var(--st-ink-3);
   }
 
+  /* ── What it looks like: the real app, demo match, fictional players ── */
+  .look { margin-top: 76px; }
+  .look h2 {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--f-ui); font-size: 13.5px; font-weight: 700;
+    letter-spacing: .13em; text-transform: uppercase; color: var(--st-ink);
+  }
+  .look h2 .gi { width: 17px; height: 17px; color: var(--st-line); }
+  .look .note { margin-top: 6px; font-size: 14px; color: var(--st-ink-3); }
+  .shots {
+    margin-top: 18px;
+    display: grid; gap: 16px;
+    grid-template-columns: minmax(0, 1.62fr) minmax(0, 1fr);
+    grid-template-areas: "main board" "ovl board";
+    align-items: start;
+  }
+  .shots figure { margin: 0; }
+  .shots .main { grid-area: main; }
+  .shots .board { grid-area: board; }
+  .shots .ovl { grid-area: ovl; }
+  .shots img {
+    display: block; width: 100%; height: auto;
+    border: 1px solid var(--st-edge); border-radius: 3px 13px 3px 3px;
+    box-shadow: 0 1px 0 rgba(0,0,0,.85), 0 18px 44px -18px rgba(0, 0, 0, .8);
+    background: #070D19;
+  }
+  @supports (corner-shape: bevel) { .shots img { corner-shape: round bevel round round; } }
+  .shots .ovl img { max-width: 480px; }
+  .shots figcaption { margin-top: 9px; font-size: 13.5px; color: var(--st-ink-3); }
+  .shots figcaption b { color: var(--st-ink-2); font-weight: 600; }
+  @media (max-width: 760px) {
+    .shots { grid-template-columns: 1fr; grid-template-areas: "main" "board" "ovl"; }
+    .shots .board img { max-width: 420px; }
+  }
+
   /* ── Fact cards ── */
   .facts {
     margin-top: 76px;
@@ -513,6 +548,28 @@
     </aside>
   </section>
 
+  <section class="look" aria-labelledby="look-h">
+    <h2 id="look-h"><svg class="gi" aria-hidden="true"><use href="icons.svg#gi-image"></use></svg>What it looks like</h2>
+    <p class="note">Screenshots from the app's demo mode. The match is simulated and the players are made up.</p>
+    <div class="shots">
+      <figure class="main">
+        <img src="shots/main.webp" width="900" height="790" loading="lazy" decoding="async"
+             alt="The main window during a match: the goal banner, both teams with rank, points, shots and boost, and the event feed">
+        <figcaption><b>Main window.</b> Live scoreboard for both teams, with ranks, and an event feed of goals, shots and demos.</figcaption>
+      </figure>
+      <figure class="board">
+        <img src="shots/board.webp" width="720" height="968" loading="lazy" decoding="async"
+             alt="The portrait board: score and clock on top, then one card per player with rank, points and play style">
+        <figcaption><b>Board for a second screen.</b> One card per player: rank, points, touch power and play style.</figcaption>
+      </figure>
+      <figure class="ovl">
+        <img src="shots/overlay.webp" width="480" height="360" loading="lazy" decoding="async"
+             alt="The in-game overlay: score, clock and a compact row for each of the six players">
+        <figcaption><b>Overlay.</b> The whole lobby in one compact panel over the game.</figcaption>
+      </figure>
+    </div>
+  </section>
+
   <div class="facts">
     <section class="card">
       <h2><svg class="gi" aria-hidden="true"><use href="icons.svg#gi-target"></use></svg>Measured, not generated</h2>
@@ -569,7 +626,9 @@
     <span>A <a href="https://gitato.net/">GITATO</a> project. Also free:
     <a href="https://rankoverlay.gitato.net/">RL Rank Overlay</a> and
     <a href="https://roll.gitato.net/">RL Roll</a>.</span>
-    <span>Not affiliated with or endorsed by Psyonix or Epic Games.</span>
+    <span>Not affiliated with or endorsed by Psyonix or Epic Games. Portions of the
+    materials used are trademarks and/or copyrighted works of Epic Games, Inc. All
+    rights reserved by Epic. This material is not official and is not endorsed by Epic.</span>
   </footer>
 
 </div>
