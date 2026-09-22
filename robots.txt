@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rltracker.gitato.net/sitemap.xml
