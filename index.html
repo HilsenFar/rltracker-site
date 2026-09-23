@@ -268,7 +268,7 @@
     font-family: var(--f-ui); font-size: 11.5px; font-weight: 600;
     letter-spacing: .14em; text-transform: uppercase; color: var(--st-ink-3);
   }
-  .debrief h3 {
+  .debrief .dh {
     font-family: var(--f-ui); font-size: 21px; font-weight: 700;
     letter-spacing: .02em; color: var(--st-ink);
     margin: 4px 0 16px;
@@ -279,13 +279,13 @@
     overflow: visible;
   }
   .meter .fill {
-    position: absolute; inset: 0 auto 0 0; width: 58%;
+    position: absolute; inset: 0 auto 0 0; width: 57%;
     border-radius: 5px;
     background: linear-gradient(90deg, rgba(39, 217, 192, .55), var(--st-line));
     transform-origin: left center;
   }
   .meter .base {
-    position: absolute; left: 41%; top: -5px; bottom: -5px; width: 2px;
+    position: absolute; left: 29%; top: -5px; bottom: -5px; width: 2px;
     background: var(--st-ink-3);
   }
   .stats {
@@ -534,8 +534,8 @@
         <span class="tag">Example debrief</span>
         <span class="kicker">One focus at a time</span>
       </div>
-      <h3>Kickoff first touch</h3>
-      <div class="meter" role="img" aria-label="Meter: today 58 percent, your normal 41 percent">
+      <p class="dh">Kickoff first touch</p>
+      <div class="meter" role="img" aria-label="Meter: today 57 percent, your normal 29 percent">
         <span class="base"></span>
         <span class="fill"></span>
       </div>
@@ -588,7 +588,7 @@
 
     <section class="card">
       <h2><svg class="gi" aria-hidden="true"><use href="icons.svg#gi-check-circle"></use></svg>Works with EAC on</h2>
-      <p>One setting in DefaultStatsAPI.ini, and Rocket League broadcasts match JSON
+      <p>One setting in TAStatsAPI.ini (DefaultStatsAPI.ini if you don't have that file), and Rocket League broadcasts match JSON
       on a local port on your PC. Nothing touches the game's process or memory.</p>
       <p><a href="https://rocketleague.com/developer/stats-api" rel="noopener">Psyonix
       documents this channel</a> for exactly this purpose.</p>
@@ -601,11 +601,12 @@
       <li>No login, no account, nothing to sign up for.</li>
       <li>It runs on your PC, and your telemetry stays there.</li>
       <li>On first launch it asks once: "Join the test round?" Yes shares your
-      match reports with the developer, to calibrate the coach. No means nothing
-      is ever uploaded.</li>
-      <li>Every file it writes is plain JSON you can open and read yourself.</li>
-      <li>The rest of the network traffic: public rank lookups and a daily
-      version check. That is the whole list.</li>
+      match reports with the developer, to calibrate the coach. No means none of
+      your reports are ever uploaded.</li>
+      <li>Every file it writes is plain JSON or HTML you can open and read yourself.</li>
+      <li>The rest of the network traffic: rank lookups, where the public player
+      IDs in your lobby go to the developer's rank service at collect.gitato.net
+      and ranks come back, and a daily version check. That is the whole list.</li>
     </ul>
   </section>
 
@@ -691,11 +692,18 @@
     var d = new Date(at);
     el.textContent = 'Latest: ' + tag + ' \u00b7 ' + d.getUTCDate() + ' ' + M[d.getUTCMonth()] + ' ' + d.getUTCFullYear();
   }
-  try { var c = JSON.parse(localStorage.getItem(KEY) || 'null'); if (c && Date.now() - c.t < 3600000) return show(c.tag, c.at); } catch (e) {}
+  try {
+    var c = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (c && c.fail) { if (Date.now() - c.t < 900000) return; }        // refused recently: leave GitHub alone
+    else if (c && Date.now() - c.t < 3600000) return show(c.tag, c.at);
+  } catch (e) {}
   fetch('https://api.github.com/repos/HilsenFar/rl-tracker-releases/releases/latest', { headers: { Accept: 'application/vnd.github+json' } })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(j){
-      if (!j || typeof j.tag_name !== 'string') return;
+      if (!j || typeof j.tag_name !== 'string') {
+        try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), fail: true })); } catch (e) {}
+        return;
+      }
       show(j.tag_name, j.published_at);
       try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), tag: j.tag_name, at: j.published_at })); } catch (e) {}
     }).catch(function(){});
