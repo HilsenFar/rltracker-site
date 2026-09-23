@@ -21,6 +21,8 @@
 <!-- The two faces above the fold, fetched before the CSS asks for them.
      Without this, Archivo swapped in ~1.4 s after first paint and the hero
      reflowed (measured on the sibling overlay page: CLS 0.275). -->
+<!-- Both faces are fetched before the CSS asks for them; the fallback faces
+     below keep the text still while they arrive (23/9). -->
 <link rel="preload" href="archivo-var.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="orbitron-800.woff2" as="font" type="font/woff2" crossorigin />
 <!-- GITATO Design System v2.1 (focus + base tokens + icons) loads first;
@@ -39,6 +41,19 @@
     src:url('archivo-var.woff2') format('woff2');
     font-weight:100 900; font-stretch:62% 125%; font-style:normal; font-display:swap;
   }
+  /* Stand-ins while Archivo loads (23/9): Segoe UI, Arial or Roboto with
+     Archivo's line metrics and scaled to its width, so the swap no longer
+     moves text (cold slow load: CLS 0.15 before). Computed with
+     fontTools from the font files; headline target wdth 118 / wght 840. */
+  @font-face{font-family:'Archivo FB';src:local('Segoe UI'),local('SegoeUI');font-weight:100 549;size-adjust:99.5%;ascent-override:88.3%;descent-override:21.1%;line-gap-override:0%}
+  @font-face{font-family:'Archivo FB';src:local('Segoe UI Bold'),local('SegoeUI-Bold');font-weight:550 749;size-adjust:97.8%;ascent-override:89.8%;descent-override:21.5%;line-gap-override:0%}
+  @font-face{font-family:'Archivo FB';src:local('Segoe UI Black'),local('SegoeUI-Black');font-weight:750 900;size-adjust:119.3%;ascent-override:73.6%;descent-override:17.6%;line-gap-override:0%}
+  @font-face{font-family:'Archivo FB A';src:local('Arial'),local('ArialMT');font-weight:100 549;size-adjust:98.2%;ascent-override:89.4%;descent-override:21.4%;line-gap-override:0%}
+  @font-face{font-family:'Archivo FB A';src:local('Arial Bold'),local('Arial-BoldMT');font-weight:550 749;size-adjust:96.4%;ascent-override:91.1%;descent-override:21.8%;line-gap-override:0%}
+  @font-face{font-family:'Archivo FB A';src:local('Arial Bold'),local('Arial-BoldMT');font-weight:750 900;size-adjust:123.3%;ascent-override:71.2%;descent-override:17.0%;line-gap-override:0%}
+  @font-face{font-family:'Archivo FB R';src:local('Roboto'),local('Roboto-Regular');font-weight:100 549;size-adjust:99.1%;ascent-override:88.6%;descent-override:21.2%;line-gap-override:0%}
+  @font-face{font-family:'Archivo FB R';src:local('Roboto Bold'),local('Roboto-Bold');font-weight:550 749;size-adjust:102.8%;ascent-override:85.4%;descent-override:20.4%;line-gap-override:0%}
+  @font-face{font-family:'Archivo FB R';src:local('Roboto Black'),local('Roboto-Black');font-weight:750 900;size-adjust:130.6%;ascent-override:67.2%;descent-override:16.1%;line-gap-override:0%}
   @font-face{
     font-family:'Orbitron';
     src:url('orbitron-800.woff2') format('woff2');
@@ -71,9 +86,9 @@
     /* ONE family carries all three roles. Before, --f-ui pointed at Chakra Petch
        and --f-body at Barlow, and neither was ever loaded, so two thirds of
        the page sat in the browser's default sans. */
-    --f-disp: 'Archivo', 'Segoe UI', system-ui, sans-serif;
-    --f-ui:   'Archivo', 'Segoe UI', system-ui, sans-serif;
-    --f-body: 'Archivo', 'Segoe UI', system-ui, sans-serif;
+    --f-disp: 'Archivo', 'Archivo FB', 'Archivo FB A', 'Archivo FB R', 'Segoe UI', system-ui, sans-serif;
+    --f-ui:   'Archivo', 'Archivo FB', 'Archivo FB A', 'Archivo FB R', 'Segoe UI', system-ui, sans-serif;
+    --f-body: 'Archivo', 'Archivo FB', 'Archivo FB A', 'Archivo FB R', 'Segoe UI', system-ui, sans-serif;
     --st-cut: 13px;
     --st-chamfer:
       inset 0 1px 0 rgba(196,224,255,.24),
@@ -606,7 +621,9 @@
       <li>Every file it writes is plain JSON or HTML you can open and read yourself.</li>
       <li>The rest of the network traffic: rank lookups, where the public player
       IDs in your lobby go to the developer's rank service at collect.gitato.net
-      and ranks come back, and a daily version check. That is the whole list.</li>
+      and ranks come back; a daily version check; and any feedback message you
+      type and send, which goes to the same server with the app version (and your
+      tester name, if you joined the test round). That is the whole list.</li>
     </ul>
   </section>
 
