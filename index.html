@@ -42,17 +42,18 @@
     font-weight:100 900; font-stretch:62% 125%; font-style:normal; font-display:swap;
   }
   /* Stand-ins while Archivo loads (23/9): Segoe UI, Arial or Roboto with
-     Archivo's line metrics and scaled to its width, so the swap no longer
+     Archivo's line metrics and scaled to its width (weights 550-749 on caps, the
+     labels they set), so the swap no longer
      moves text (cold slow load: CLS 0.15 before). Computed with
      fontTools from the font files; headline target wdth 118 / wght 840. */
   @font-face{font-family:'Archivo FB';src:local('Segoe UI'),local('SegoeUI');font-weight:100 549;size-adjust:99.5%;ascent-override:88.3%;descent-override:21.1%;line-gap-override:0%}
-  @font-face{font-family:'Archivo FB';src:local('Segoe UI Bold'),local('SegoeUI-Bold');font-weight:550 749;size-adjust:97.8%;ascent-override:89.8%;descent-override:21.5%;line-gap-override:0%}
-  @font-face{font-family:'Archivo FB';src:local('Segoe UI Black'),local('SegoeUI-Black');font-weight:750 900;size-adjust:119.3%;ascent-override:73.6%;descent-override:17.6%;line-gap-override:0%}
+  @font-face{font-family:'Archivo FB';src:local('Segoe UI Bold'),local('SegoeUI-Bold');font-weight:550 749;size-adjust:105.3%;ascent-override:83.4%;descent-override:19.9%;line-gap-override:0%}
+  @font-face{font-family:'Archivo FB';src:local('Segoe UI Black'),local('SegoeUIBlack');font-weight:750 900;size-adjust:119.3%;ascent-override:73.6%;descent-override:17.6%;line-gap-override:0%}
   @font-face{font-family:'Archivo FB A';src:local('Arial'),local('ArialMT');font-weight:100 549;size-adjust:98.2%;ascent-override:89.4%;descent-override:21.4%;line-gap-override:0%}
-  @font-face{font-family:'Archivo FB A';src:local('Arial Bold'),local('Arial-BoldMT');font-weight:550 749;size-adjust:96.4%;ascent-override:91.1%;descent-override:21.8%;line-gap-override:0%}
+  @font-face{font-family:'Archivo FB A';src:local('Arial Bold'),local('Arial-BoldMT');font-weight:550 749;size-adjust:98.3%;ascent-override:89.3%;descent-override:21.4%;line-gap-override:0%}
   @font-face{font-family:'Archivo FB A';src:local('Arial Bold'),local('Arial-BoldMT');font-weight:750 900;size-adjust:123.3%;ascent-override:71.2%;descent-override:17.0%;line-gap-override:0%}
   @font-face{font-family:'Archivo FB R';src:local('Roboto'),local('Roboto-Regular');font-weight:100 549;size-adjust:99.1%;ascent-override:88.6%;descent-override:21.2%;line-gap-override:0%}
-  @font-face{font-family:'Archivo FB R';src:local('Roboto Bold'),local('Roboto-Bold');font-weight:550 749;size-adjust:102.8%;ascent-override:85.4%;descent-override:20.4%;line-gap-override:0%}
+  @font-face{font-family:'Archivo FB R';src:local('Roboto Bold'),local('Roboto-Bold');font-weight:550 749;size-adjust:110.6%;ascent-override:79.4%;descent-override:19.0%;line-gap-override:0%}
   @font-face{font-family:'Archivo FB R';src:local('Roboto Black'),local('Roboto-Black');font-weight:750 900;size-adjust:130.6%;ascent-override:67.2%;descent-override:16.1%;line-gap-override:0%}
   @font-face{
     font-family:'Orbitron';
@@ -201,6 +202,10 @@
     margin-bottom: 20px;
   }
   .eyebrow .sep { color: var(--st-line); }
+  /* Phones: the two parts always on their own lines. On one line the label sat
+     right at the edge at 320-360 px and wrapped in Archivo but not in the
+     stand-in font, so the swap pushed the page down. */
+  @media (max-width: 400px) { .eyebrow { flex-direction: column; gap: 2px; } .eyebrow .sep { display: none; } }
   h1 {
     font-family: var(--f-disp);
     font-stretch: 118%;
@@ -211,6 +216,11 @@
     text-transform: uppercase;
     color: var(--st-ink);
   }
+  /* 314-327 px: Archivo breaks this headline into three lines, the narrower
+     Segoe UI stand-in into two, so the swap pushed the page down (CLS 0.21
+     at 320). Hold three lines' height in that band. Measured on this copy;
+     re-measure with _tools/h1lines.js if the headline changes. */
+  @media (max-width: 327px) { h1 { min-height: 3.06em; } }
   h1 .tell { color: var(--st-boost); }
   .sub { margin-top: 18px; max-width: 54ch; font-size: 17.5px; }
 
@@ -622,8 +632,9 @@
       <li>The rest of the network traffic: rank lookups, where the public player
       IDs in your lobby go to the developer's rank service at collect.gitato.net
       and ranks come back; a daily version check; and any feedback message you
-      type and send, which goes to the same server with the app version (and your
-      tester name, if you joined the test round). That is the whole list.</li>
+      type and send, which goes to the same server with the app version and, if
+      you joined the test round, your tester name and upload ID. That is the
+      whole list.</li>
     </ul>
   </section>
 
